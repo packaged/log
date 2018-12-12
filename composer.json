@@ -1,0 +1,21 @@
+{
+  "name": "packaged/log",
+  "description": "Generic Logger",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Brooke Bryan",
+      "email": "brooke@bajb.net"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "packaged/helpers": "~1.9",
+    "psr/log": "1.1.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Packaged\\Log\\": "src"
+    }
+  }
+}
