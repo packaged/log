@@ -10,9 +10,10 @@ class Log
    */
   private static $_logger;
 
-  public function __construct(LoggerInterface $logger)
+  public static function bind(LoggerInterface $logger): LoggerInterface
   {
     self::$_logger = $logger;
+    return self::$_logger;
   }
 
   public static function emergency($message, array $context = [])
