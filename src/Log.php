@@ -8,7 +8,7 @@ class Log
   /**
    * @var LoggerInterface
    */
-  private static $_logger;
+  protected static $_logger;
 
   public static function bind(LoggerInterface $logger): LoggerInterface
   {
