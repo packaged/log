@@ -1,7 +1,6 @@
 <?php
 namespace Packaged\Log;
 
-use Packaged\Helpers\Arrays;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
 
@@ -52,6 +51,6 @@ class ErrorLogLogger extends AbstractLogger
 
   private function _levelToNum($level)
   {
-    return $this->_levels[$level] ?? Arrays::last($this->_levels);
+    return $this->_levels[$level] ?? end($this->_levels);
   }
 }
