@@ -1,6 +1,7 @@
 <?php
 namespace Packaged\Log\Tests;
 
+use Exception;
 use Packaged\Log\ErrorLogLogger;
 use Packaged\Log\Log;
 use Psr\Log\LogLevel;
@@ -56,5 +57,26 @@ class LoggerTest extends AbstractLoggerTestCase
 
     Log::debug('debug: test');
     $this->assertLastLog('info: test');
+  }
+
+  public function testExceptionLog()
+  {
+    Log::bind(new ErrorLogLogger());
+
+    $e = new Exception('exception message', 123);
+    Log::exception($e);
+    $this->assertLastLog('EXCEPTION (123): exception message');
+  }
+
+  public function testExceptionTraceLog()
+  {
+    Log::bind(new ErrorLogLogger());
+
+    $e = new Exception('exception message', 123);
+    Log::exceptionWithTrace($e);
+    $this->assertContains('EXCEPTION (123): exception message', $this->_getLogContents());
+    $this->assertContains('Packaged\Log\Tests\LoggerTest->testExceptionTraceLog()', $this->_getLogContents());
+    $this->assertContains('#0', $this->_getLogContents());
+    $this->assertContains('{main}', $this->_getLogContents());
   }
 }

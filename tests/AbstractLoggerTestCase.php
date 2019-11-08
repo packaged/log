@@ -19,7 +19,7 @@ abstract class AbstractLoggerTestCase extends TestCase
     unlink($this->_tempFile);
   }
 
-  private function _getLogContents()
+  protected function _getLogContents()
   {
     return file_get_contents($this->_tempFile);
   }

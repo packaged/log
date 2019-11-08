@@ -2,6 +2,7 @@
 namespace Packaged\Log;
 
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class Log
 {
@@ -74,5 +75,15 @@ class Log
   public static function debug($message, array $context = [])
   {
     self::_getLogger()->debug($message, $context);
+  }
+
+  public static function exception(Throwable $e)
+  {
+    static::error("EXCEPTION (" . $e->getCode() . "): " . $e->getMessage());
+  }
+
+  public static function exceptionWithTrace(Throwable $e)
+  {
+    static::error("EXCEPTION (" . $e->getCode() . "): " . $e->getMessage() . "\n" . $e->getTraceAsString());
   }
 }
