@@ -89,9 +89,10 @@ class ErrorLogLoggerTest extends TestCase
 
     $e = new Exception('exception message', 123);
     Log::exception($e);
-    self::assertLastLog(
-      '[critical] exception message {"code":123,"file":"\/Users\/tom.kay\/code\/packaged\/log\/tests\/ErrorLogLoggerTest.php","line":90}'
-    );
+    self::assertContains('[critical] exception message ', $this->_getLogContents());
+    self::assertContains('"code":123', $this->_getLogContents());
+    self::assertContains('"line":90', $this->_getLogContents());
+    self::assertContains('ErrorLogLoggerTest.php', $this->_getLogContents());
   }
 
   public function testExceptionTraceLog()
@@ -100,9 +101,11 @@ class ErrorLogLoggerTest extends TestCase
 
     $e = new Exception('exception message', 123);
     Log::exceptionWithTrace($e);
-    self::assertLastLog(
-      '[critical] exception message {"code":123,"file":"\/Users\/tom.kay\/code\/packaged\/log\/tests\/ErrorLogLoggerTest.php","line":101,"stack_trace":"#0 \/Users\/tom.kay\/code\/packaged\/log\/vendor\/phpunit\/phpunit\/src\/Framework\/TestCase.php(1154): Packaged\\\\Log\\\\Tests\\\\ErrorLogLoggerTest->testExceptionTraceLog()\n#1 \/Users\/tom.kay\/code\/packaged\/log\/vendor\/phpunit\/phpunit\/src\/Framework\/TestCase.php(842): PHPUnit\\\\Framework\\\\TestCase->runTest()\n#2 \/Users\/tom.kay\/code\/packaged\/log\/vendor\/phpunit\/phpunit\/src\/Framework\/TestResult.php(693): PHPUnit\\\\Framework\\\\TestCase->runBare()\n#3 \/Users\/tom.kay\/code\/packaged\/log\/vendor\/phpunit\/phpunit\/src\/Framework\/TestCase.php(796): PHPUnit\\\\Framework\\\\TestResult->run(Object(Packaged\\\\Log\\\\Tests\\\\ErrorLogLoggerTest))\n#4 \/Users\/tom.kay\/code\/packaged\/log\/vendor\/phpunit\/phpunit\/src\/Framework\/TestSuite.php(746): PHPUnit\\\\Framework\\\\TestCase->run(Object(PHPUnit\\\\Framework\\\\TestResult))\n#5 \/Users\/tom.kay\/code\/packaged\/log\/vendor\/phpunit\/phpunit\/src\/Framework\/TestSuite.php(746): PHPUnit\\\\Framework\\\\TestSuite->run(Object(PHPUnit\\\\Framework\\\\TestResult))\n#6 \/Users\/tom.kay\/code\/packaged\/log\/vendor\/phpunit\/phpunit\/src\/TextUI\/TestRunner.php(652): PHPUnit\\\\Framework\\\\TestSuite->run(Object(PHPUnit\\\\Framework\\\\TestResult))\n#7 \/Users\/tom.kay\/code\/packaged\/log\/vendor\/phpunit\/phpunit\/src\/TextUI\/Command.php(206): PHPUnit\\\\TextUI\\\\TestRunner->doRun(Object(PHPUnit\\\\Framework\\\\TestSuite), Array, true)\n#8 \/Users\/tom.kay\/code\/packaged\/log\/vendor\/phpunit\/phpunit\/src\/TextUI\/Command.php(162): PHPUnit\\\\TextUI\\\\Command->run(Array, true)\n#9 \/Users\/tom.kay\/code\/packaged\/log\/vendor\/phpunit\/phpunit\/phpunit(61): PHPUnit\\\\TextUI\\\\Command::main()\n#10 {main}"}'
-    );
+    self::assertContains('[critical] exception message ', $this->_getLogContents());
+    self::assertContains('"code":123', $this->_getLogContents());
+    self::assertContains('"line":102', $this->_getLogContents());
+    self::assertContains('ErrorLogLoggerTest.php', $this->_getLogContents());
+    self::assertContains('"stack_trace"', $this->_getLogContents());
   }
 
   public function testContextLog()
