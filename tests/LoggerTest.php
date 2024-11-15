@@ -79,4 +79,11 @@ class LoggerTest extends AbstractLoggerTestCase
     $this->assertContains('#0', $this->_getLogContents());
     $this->assertContains('{main}', $this->_getLogContents());
   }
+
+  public function testContextLog()
+  {
+    Log::bind(new ErrorLogLogger());
+    Log::debug('debug: test', ['test1' => 'value1', 'test2' => 'value2']);
+    $this->assertLastLog('debug: test {"test1":"value1","test2":"value2"}');
+  }
 }
