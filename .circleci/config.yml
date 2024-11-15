@@ -37,7 +37,7 @@ jobs:
   build-phpRC:
     <<: *defaults
     docker:
-      - image: php:rc-alpine
+      - image: php:7.4-alpine
 
 workflows:
   version: 2
