@@ -33,6 +33,11 @@ class ErrorLogLogger extends AbstractLogger
     $this->setMaxLogLevel($maxLevel);
   }
 
+  protected function _writeLog($message)
+  {
+    error_log($message);
+  }
+
   /**
    * @param string $level One of the Psr\Log\LogLevel constants
    */
@@ -45,12 +50,17 @@ class ErrorLogLogger extends AbstractLogger
   {
     if($this->_levelToNum($level) <= $this->_maxLevel)
     {
-      if(!empty($context))
-      {
-        $message .= ' ' . json_encode($context);
-      }
-      error_log($message);
+      $this->_writeLog($this->_formatLog($level, $message, $context));
     }
+  }
+
+  protected function _formatLog($level, $message, array $context = null)
+  {
+    if(!empty($context))
+    {
+      $message .= ' ' . json_encode($context);
+    }
+    return "[$level] $message";
   }
 
   private function _levelToNum($level)

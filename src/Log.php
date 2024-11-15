@@ -79,11 +79,26 @@ class Log
 
   public static function exception(Throwable $e)
   {
-    static::error("EXCEPTION (" . $e->getCode() . "): " . $e->getMessage());
+    static::critical(
+      $e->getMessage(),
+      [
+        'code' => $e->getCode(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+      ]
+    );
   }
 
   public static function exceptionWithTrace(Throwable $e)
   {
-    static::error("EXCEPTION (" . $e->getCode() . "): " . $e->getMessage() . "\n" . $e->getTraceAsString());
+    static::critical(
+      $e->getMessage(),
+      [
+        'code' => $e->getCode(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'stack_trace' => $e->getTraceAsString(),
+      ]
+    );
   }
 }
