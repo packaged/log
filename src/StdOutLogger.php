@@ -14,7 +14,7 @@ class StdOutLogger extends ErrorLogLogger
   public function __construct($maxLevel = LogLevel::DEBUG)
   {
     parent::__construct($maxLevel);
-    $this->setHandle(STDOUT);
+    $this->setHandle(fopen('php://stdout', 'w'));
   }
 
   public function setHandle($handle)
