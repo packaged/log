@@ -77,11 +77,11 @@ class Log
     self::_getLogger()->debug($message, $context);
   }
 
-  public static function exception(Throwable $e)
+  public static function exception(Throwable $e, array $context = [])
   {
     static::critical(
       $e->getMessage(),
-      [
+      $context + [
         'code' => $e->getCode(),
         'file' => $e->getFile(),
         'line' => $e->getLine(),
@@ -89,14 +89,14 @@ class Log
     );
   }
 
-  public static function exceptionWithTrace(Throwable $e)
+  public static function exceptionWithTrace(Throwable $e, array $context = [])
   {
     static::critical(
       $e->getMessage(),
-      [
-        'code' => $e->getCode(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
+      $context + [
+        'code'        => $e->getCode(),
+        'file'        => $e->getFile(),
+        'line'        => $e->getLine(),
         'stack_trace' => $e->getTraceAsString(),
       ]
     );

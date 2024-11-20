@@ -100,10 +100,11 @@ class StdOutLoggerTest extends TestCase
     Log::bind($this->_getTestLogger());
 
     $e = new Exception('exception message', 123);
-    Log::exceptionWithTrace($e);
+    Log::exceptionWithTrace($e, ['extra' => 'additional']);
     self::assertContains('[CRITICAL] exception message ', $this->_getLogContents());
     self::assertContains('"code":123', $this->_getLogContents());
     self::assertContains('"line":102', $this->_getLogContents());
+    self::assertContains('"extra":"additional"', $this->_getLogContents());
     self::assertContains('StdOutLoggerTest.php', $this->_getLogContents());
     self::assertContains('"stack_trace"', $this->_getLogContents());
   }
