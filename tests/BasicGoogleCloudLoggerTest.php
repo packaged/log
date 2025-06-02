@@ -47,28 +47,28 @@ class BasicGoogleCloudLoggerTest extends TestCase
     Log::bind($this->_getTestLogger());
 
     Log::debug('debug: test');
-    self::assertLastLog('","severity":"debug","textPayload":"debug: test"}');
+    self::assertLastLog('","severity":"DEBUG","textPayload":"debug: test"}');
 
     Log::info('info: test');
-    self::assertLastLog('","severity":"info","textPayload":"info: test"}');
+    self::assertLastLog('","severity":"INFO","textPayload":"info: test"}');
 
     Log::notice('notice: test');
-    self::assertLastLog('","severity":"notice","textPayload":"notice: test"}');
+    self::assertLastLog('","severity":"NOTICE","textPayload":"notice: test"}');
 
     Log::warning('warning: test');
-    self::assertLastLog('","severity":"warning","textPayload":"warning: test"}');
+    self::assertLastLog('","severity":"WARNING","textPayload":"warning: test"}');
 
     Log::error('error: test');
-    self::assertLastLog('","severity":"error","textPayload":"error: test"}');
+    self::assertLastLog('","severity":"ERROR","textPayload":"error: test"}');
 
     Log::critical('critical: test');
-    self::assertLastLog('","severity":"critical","textPayload":"critical: test"}');
+    self::assertLastLog('","severity":"CRITICAL","textPayload":"critical: test"}');
 
     Log::alert('alert: test');
-    self::assertLastLog('","severity":"alert","textPayload":"alert: test"}');
+    self::assertLastLog('","severity":"ALERT","textPayload":"alert: test"}');
 
     Log::emergency('emergency: test');
-    self::assertLastLog('","severity":"emergency","textPayload":"emergency: test"}');
+    self::assertLastLog('","severity":"EMERGENCY","textPayload":"emergency: test"}');
   }
 
   public function testLevelLog()
@@ -76,10 +76,10 @@ class BasicGoogleCloudLoggerTest extends TestCase
     Log::bind($this->_getTestLogger(LogLevel::INFO));
 
     Log::info('info: test');
-    self::assertLastLog('","severity":"info","textPayload":"info: test"}');
+    self::assertLastLog('","severity":"INFO","textPayload":"info: test"}');
 
     Log::debug('debug: test');
-    self::assertLastLog('","severity":"info","textPayload":"info: test"}');
+    self::assertLastLog('","severity":"INFO","textPayload":"info: test"}');
   }
 
   public function testExceptionLog()
@@ -89,7 +89,7 @@ class BasicGoogleCloudLoggerTest extends TestCase
     $e = new Exception('exception message', 123);
     Log::exception($e);
     self::assertContains(',"textPayload":"exception message"', $this->_getLogContents());
-    self::assertContains(',"severity":"critical"', $this->_getLogContents());
+    self::assertContains(',"severity":"CRITICAL"', $this->_getLogContents());
     self::assertNotContains('"stace_trace":', $this->_getLogContents());
   }
 
@@ -100,7 +100,7 @@ class BasicGoogleCloudLoggerTest extends TestCase
     $e = new Exception('exception message', 123);
     Log::exceptionWithTrace($e, ['extra' => 'additional']);
     self::assertContains('"textPayload":"exception message"', $this->_getLogContents());
-    self::assertContains('"severity":"critical"', $this->_getLogContents());
+    self::assertContains('"severity":"CRITICAL"', $this->_getLogContents());
     self::assertContains('"code":123', $this->_getLogContents());
     self::assertContains('"line":100', $this->_getLogContents());
     self::assertContains('"extra":"additional"', $this->_getLogContents());
@@ -112,8 +112,19 @@ class BasicGoogleCloudLoggerTest extends TestCase
   {
     Log::bind($this->_getTestLogger());
     Log::debug('debug: test', ['test1' => 'value1', 'test2' => 'value2']);
-    self::assertLastLog(
-      '","severity":"debug","textPayload":"debug: test","jsonPayload":{"test1":"value1","test2":"value2"}}'
+    self::assertArraySubset(
+      json_decode('{"severity":"DEBUG","textPayload":"debug: test","test1":"value1","test2":"value2"}', true),
+      json_decode($this->_getLogContents(), true)
+    );
+  }
+
+  public function testOverride()
+  {
+    Log::bind($this->_getTestLogger());
+    Log::debug('debug: test', ['severity' => 'ignored', 'textPayload' => 'drop this']);
+    self::assertArraySubset(
+      json_decode('{"severity":"DEBUG","textPayload":"debug: test"}', true),
+      json_decode($this->_getLogContents(), true)
     );
   }
 }
