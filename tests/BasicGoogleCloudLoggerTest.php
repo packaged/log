@@ -1,4 +1,5 @@
 <?php
+
 namespace Packaged\Log\Tests;
 
 use Exception;
@@ -7,19 +8,20 @@ use Packaged\Log\ErrorLogLogger;
 use Packaged\Log\Log;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
+use function json_decode;
 
 class BasicGoogleCloudLoggerTest extends TestCase
 {
   private $_tempFile;
   private $_handler;
 
-  public function setUp()
+  public function setUp(): void
   {
     $this->_tempFile = tempnam(sys_get_temp_dir(), 'packaged-log-');
     $this->_handler = fopen($this->_tempFile, 'wb');
   }
 
-  public function tearDown()
+  public function tearDown(): void
   {
     fclose($this->_handler);
     unlink($this->_tempFile);
@@ -88,9 +90,9 @@ class BasicGoogleCloudLoggerTest extends TestCase
 
     $e = new Exception('exception message', 123);
     Log::exception($e);
-    self::assertContains(',"textPayload":"exception message"', $this->_getLogContents());
-    self::assertContains(',"severity":"CRITICAL"', $this->_getLogContents());
-    self::assertNotContains('"stace_trace":', $this->_getLogContents());
+    self::assertStringContainsString(',"textPayload":"exception message"', $this->_getLogContents());
+    self::assertStringContainsString(',"severity":"CRITICAL"', $this->_getLogContents());
+    self::assertStringNotContainsString('"stace_trace":', $this->_getLogContents());
   }
 
   public function testExceptionTraceLog()
@@ -99,32 +101,46 @@ class BasicGoogleCloudLoggerTest extends TestCase
 
     $e = new Exception('exception message', 123);
     Log::exceptionWithTrace($e, ['extra' => 'additional']);
-    self::assertContains('"textPayload":"exception message"', $this->_getLogContents());
-    self::assertContains('"severity":"CRITICAL"', $this->_getLogContents());
-    self::assertContains('"code":123', $this->_getLogContents());
-    self::assertContains('"line":100', $this->_getLogContents());
-    self::assertContains('"extra":"additional"', $this->_getLogContents());
-    self::assertContains('BasicGoogleCloudLoggerTest.php', $this->_getLogContents());
-    self::assertContains('"stack_trace"', $this->_getLogContents());
+    self::assertStringContainsString('"textPayload":"exception message"', $this->_getLogContents());
+    self::assertStringContainsString('"severity":"CRITICAL"', $this->_getLogContents());
+    self::assertStringContainsString('"code":123', $this->_getLogContents());
+    self::assertStringContainsString('"line":102', $this->_getLogContents());
+    self::assertStringContainsString('"extra":"additional"', $this->_getLogContents());
+    self::assertStringContainsString('BasicGoogleCloudLoggerTest.php', $this->_getLogContents());
+    self::assertStringContainsString('"stack_trace"', $this->_getLogContents());
   }
 
   public function testContextLog()
   {
     Log::bind($this->_getTestLogger());
     Log::debug('debug: test', ['test1' => 'value1', 'test2' => 'value2']);
-    self::assertArraySubset(
-      json_decode('{"severity":"DEBUG","textPayload":"debug: test","test1":"value1","test2":"value2"}', true),
-      json_decode($this->_getLogContents(), true)
+
+    $testContent = json_decode(
+      '{"severity":"DEBUG","textPayload":"debug: test","test1":"value1","test2":"value2"}',
+      true
     );
+
+    $logContent = json_decode($this->_getLogContents(), true);
+
+    foreach ($testContent as $k => $v)
+    {
+      self::assertArrayHasKey($k, $logContent);
+      self::assertEquals($v, $logContent[$k]);
+    }
   }
 
   public function testOverride()
   {
     Log::bind($this->_getTestLogger());
     Log::debug('debug: test', ['severity' => 'ignored', 'textPayload' => 'drop this']);
-    self::assertArraySubset(
-      json_decode('{"severity":"DEBUG","textPayload":"debug: test"}', true),
-      json_decode($this->_getLogContents(), true)
-    );
+
+    $testContent = json_decode('{"severity":"DEBUG","textPayload":"debug: test"}', true);
+    $logContent = json_decode($this->_getLogContents(), true);
+
+    foreach ($testContent as $k => $v)
+    {
+      self::assertArrayHasKey($k, $logContent);
+      self::assertEquals($v, $logContent[$k]);
+    }
   }
 }

@@ -1,9 +1,6 @@
 <?php
 namespace Packaged\Log;
 
-use Psr\Log\AbstractLogger;
-use Psr\Log\LogLevel;
-
 /**
  * Logger that outputs the messages using error_log()
  */
