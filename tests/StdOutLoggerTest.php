@@ -14,13 +14,13 @@ class StdOutLoggerTest extends TestCase
   private $_tempFile;
   private $_handler;
 
-  public function setUp()
+  public function setUp(): void
   {
     $this->_tempFile = tempnam(sys_get_temp_dir(), 'packaged-log-');
     $this->_handler = fopen($this->_tempFile, 'wb');
   }
 
-  public function tearDown()
+  public function tearDown(): void
   {
     fclose($this->_handler);
     unlink($this->_tempFile);
@@ -89,10 +89,10 @@ class StdOutLoggerTest extends TestCase
 
     $e = new Exception('exception message', 123);
     Log::exception($e);
-    self::assertContains('[CRITICAL] exception message ', $this->_getLogContents());
-    self::assertContains('"code":123', $this->_getLogContents());
-    self::assertContains('"line":90', $this->_getLogContents());
-    self::assertContains('StdOutLoggerTest.php', $this->_getLogContents());
+    self::assertStringContainsString('[CRITICAL] exception message ', $this->_getLogContents());
+    self::assertStringContainsString('"code":123', $this->_getLogContents());
+    self::assertStringContainsString('"line":90', $this->_getLogContents());
+    self::assertStringContainsString('StdOutLoggerTest.php', $this->_getLogContents());
   }
 
   public function testExceptionTraceLog()
@@ -101,12 +101,12 @@ class StdOutLoggerTest extends TestCase
 
     $e = new Exception('exception message', 123);
     Log::exceptionWithTrace($e, ['extra' => 'additional']);
-    self::assertContains('[CRITICAL] exception message ', $this->_getLogContents());
-    self::assertContains('"code":123', $this->_getLogContents());
-    self::assertContains('"line":102', $this->_getLogContents());
-    self::assertContains('"extra":"additional"', $this->_getLogContents());
-    self::assertContains('StdOutLoggerTest.php', $this->_getLogContents());
-    self::assertContains('"stack_trace"', $this->_getLogContents());
+    self::assertStringContainsString('[CRITICAL] exception message ', $this->_getLogContents());
+    self::assertStringContainsString('"code":123', $this->_getLogContents());
+    self::assertStringContainsString('"line":102', $this->_getLogContents());
+    self::assertStringContainsString('"extra":"additional"', $this->_getLogContents());
+    self::assertStringContainsString('StdOutLoggerTest.php', $this->_getLogContents());
+    self::assertStringContainsString('"stack_trace"', $this->_getLogContents());
   }
 
   public function testContextLog()

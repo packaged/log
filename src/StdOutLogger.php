@@ -1,7 +1,6 @@
 <?php
 namespace Packaged\Log;
 
-use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
 
 /**

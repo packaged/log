@@ -46,7 +46,7 @@ class ErrorLogLogger extends AbstractLogger
     $this->_maxLevel = $this->_levelToNum($level);
   }
 
-  public function log($level, $message, array $context = null)
+  public function log($level, $message, array $context = null): void
   {
     if($this->_levelToNum($level) <= $this->_maxLevel)
     {
